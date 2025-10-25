@@ -3,14 +3,18 @@ using MyRecipeBook.Application.Services.Cryptography;
 using MyRecipeBook.Application.Services.Mappings;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Domain.Repositories.User;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UseCases.User.Register
 {
     public class RegisterUserUseCase
     {
+        private readonly IUserWriteOnlyRepository _userWriteOnlyRepository;
+
+        private readonly IUserReadOnlyRepository _userReadOnlyRepository;
         /* Regra de negócio para registrar um usuário */
-        public ResponseResgisteredUserJson Execute(RequestRegisterUserJson request)
+        public async Task<ResponseResgisteredUserJson> Execute(RequestRegisterUserJson request)
         {
             /* Configurar os mapeamentos */
             MapConfigurations.Configure(); /* Ainda falta fazer a injeção de dependencias */
@@ -28,6 +32,7 @@ namespace MyRecipeBook.Application.UseCases.User.Register
             user.Password = passwordEncrypter.Encrypt(request.Password);
 
             /* Salvar a entidade no banco de dados */
+            await _userWriteOnlyRepository.Add(user);
 
             return new ResponseResgisteredUserJson
             {
