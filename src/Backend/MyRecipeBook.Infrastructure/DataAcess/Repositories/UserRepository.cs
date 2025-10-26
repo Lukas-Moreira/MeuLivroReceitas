@@ -8,15 +8,15 @@ using MyRecipeBook.Infrastructure.DataAcess;
  * Autor: Lukas L. Moreira
  * Data: 2025-10-24
  */
-namespace MyRecipeBook.Infrastructure.Repositories
+namespace MyRecipeBook.Infrastructure.DataAcess.Repositories
 {
     public class UserRepository : IUserWriteOnlyRepository, IUserReadOnlyRepository
     {
         // Cria uma instância do contexto do banco de dados
-        private readonly MyRecipeBookDbContent _context;
+        private readonly MyRecipeBookDbContext _context;
 
         // Construtor que recebe o contexto do banco de dados via injeção de dependência
-        public UserRepository(MyRecipeBookDbContent context) => _context = context;
+        public UserRepository(MyRecipeBookDbContext context) => _context = context;
 
         // Adiciona um novo usuário ao banco de dados
         public async Task Add(User user) => await _context.Users.AddAsync(user);

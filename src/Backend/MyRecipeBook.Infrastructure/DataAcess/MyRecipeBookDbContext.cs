@@ -8,15 +8,15 @@ using MyRecipeBook.Domain.Entities;
  */
 namespace MyRecipeBook.Infrastructure.DataAcess
 {
-    public class MyRecipeBookDbContent : DbContext
+    public class MyRecipeBookDbContext : DbContext
     {
-        public MyRecipeBookDbContent(DbContextOptions options) : base(options) { } // Construtor que aceita opções de DbContext
+        public MyRecipeBookDbContext(DbContextOptions options) : base(options) { } // Construtor que aceita opções de DbContext
 
         public DbSet<User> Users { get; set; } // Definindo o DbSet para a entidade User
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyRecipeBookDbContent).Assembly); // Aplicando as configurações de entidade automaticamente
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyRecipeBookDbContext).Assembly); // Aplicando as configurações de entidade automaticamente
         }
     }
 }
