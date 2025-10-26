@@ -8,17 +8,26 @@ using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UseCases.User.Register
 {
-    public class RegisterUserUseCase
+    public class RegisterUserUseCase : IRegisterUserUseCase
     {
         private readonly IUserWriteOnlyRepository _userWriteOnlyRepository;
 
         private readonly IUserReadOnlyRepository _userReadOnlyRepository;
+
+        // Construtor da classe que injeta as dependências necessárias
+        public RegisterUserUseCase(
+            IUserWriteOnlyRepository userWriteOnlyRepository,
+            IUserReadOnlyRepository userReadOnlyRepository)
+        {
+            _userWriteOnlyRepository = userWriteOnlyRepository;
+            _userReadOnlyRepository = userReadOnlyRepository;
+
+            MapConfigurations.Configure(); // Esperando retorno do professor sobre o uso do Mapster
+        }
+
         /* Regra de negócio para registrar um usuário */
         public async Task<ResponseResgisteredUserJson> Execute(RequestRegisterUserJson request)
         {
-            /* Configurar os mapeamentos */
-            MapConfigurations.Configure(); /* Ainda falta fazer a injeção de dependencias */
-
             /* Instanciar o encriptador de senhas */
             var passwordEncrypter = new PasswordEncrypter();
 

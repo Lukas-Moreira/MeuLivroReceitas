@@ -11,9 +11,10 @@ namespace MyRecipeBook.API.Controllers
     {
         [HttpPost] /* Defino o tipo de requisção */
         [ProducesResponseType(typeof(ResponseResgisteredUserJson),StatusCodes.Status201Created)] /* Define o tipo de resposta e o código HTTP */
-        public IActionResult Register(RequestRegisterUserJson request)
+        public IActionResult Register(
+            [FromServices] IRegisterUserUseCase useCase,
+            [FromBody] RequestRegisterUserJson request)
         {
-            var useCase = new RegisterUserUseCase();
 
             var result = useCase.Execute(request);
 
