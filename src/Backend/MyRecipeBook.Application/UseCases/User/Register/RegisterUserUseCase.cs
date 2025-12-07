@@ -3,6 +3,7 @@ using MyRecipeBook.Application.Services.Cryptography;
 using MyRecipeBook.Application.Services.Mappings;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Domain.Repositories;
 using MyRecipeBook.Domain.Repositories.User;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
@@ -14,23 +15,27 @@ namespace MyRecipeBook.Application.UseCases.User.Register
 
         private readonly IUserReadOnlyRepository _userReadOnlyRepository;
 
+        private readonly IUnitOnWork _unitOfWork;
+
+        private readonly PasswordEncrypter _passwordEncrypter;
+
         // Construtor da classe que injeta as dependências necessárias
         public RegisterUserUseCase(
             IUserWriteOnlyRepository userWriteOnlyRepository,
-            IUserReadOnlyRepository userReadOnlyRepository)
+            IUserReadOnlyRepository userReadOnlyRepository,
+            IUnitOnWork unitOnWork,
+            PasswordEncrypter passwordEncrypter)
         {
             _userWriteOnlyRepository = userWriteOnlyRepository;
             _userReadOnlyRepository = userReadOnlyRepository;
-
+            _unitOfWork = unitOnWork;
+            _passwordEncrypter = passwordEncrypter;
             MapConfigurations.Configure(); // Esperando retorno do professor sobre o uso do Mapster
         }
 
         /* Regra de negócio para registrar um usuário */
         public async Task<ResponseResgisteredUserJson> Execute(RequestRegisterUserJson request)
         {
-            /* Instanciar o encriptador de senhas */
-            var passwordEncrypter = new PasswordEncrypter();
-
             /* Validar a request */
             ValidateRequest(request);
 
@@ -38,10 +43,12 @@ namespace MyRecipeBook.Application.UseCases.User.Register
             var user = request.Adapt<Domain.Entities.User>();
 
             /* Criptografar a senha */
-            user.Password = passwordEncrypter.Encrypt(request.Password);
+            user.Password = _passwordEncrypter.Encrypt(request.Password);
 
             /* Salvar a entidade no banco de dados */
             await _userWriteOnlyRepository.Add(user);
+
+            await _unitOfWork.Commit();
 
             return new ResponseResgisteredUserJson
             {

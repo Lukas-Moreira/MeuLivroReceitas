@@ -11,12 +11,12 @@ namespace MyRecipeBook.API.Controllers
     {
         [HttpPost] /* Defino o tipo de requisção */
         [ProducesResponseType(typeof(ResponseResgisteredUserJson),StatusCodes.Status201Created)] /* Define o tipo de resposta e o código HTTP */
-        public IActionResult Register(
+        public async Task <IActionResult> Register(
             [FromServices] IRegisterUserUseCase useCase,
             [FromBody] RequestRegisterUserJson request)
         {
 
-            var result = useCase.Execute(request);
+            var result = await useCase.Execute(request);
 
             return Created(string.Empty, result); /* Retorna o código HTTP 201 Created */
         }

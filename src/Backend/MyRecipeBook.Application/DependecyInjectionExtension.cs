@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
+using MyRecipeBook.Application.Services.Cryptography;
 using MyRecipeBook.Application.Services.Mappings;
 using MyRecipeBook.Application.UseCases.User.Register;
 
@@ -12,6 +13,7 @@ namespace MyRecipeBook.Application
         {
             //AddMappers(services); // Esperando retorno do professor sobre o uso do Mapster
             AddUseCases(services);
+            AddPassworEncrypter(services);
         }
 
         private static void AddMappers(IServiceCollection services)
@@ -33,6 +35,11 @@ namespace MyRecipeBook.Application
         private static void AddUseCases(IServiceCollection services)
         {
             services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
+        }
+
+        private static void AddPassworEncrypter(IServiceCollection services)
+        {
+            services.AddScoped(option => new PasswordEncrypter());
         }
     }
 }
