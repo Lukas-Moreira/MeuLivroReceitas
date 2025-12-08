@@ -42,7 +42,7 @@ namespace MyRecipeBook.Application
         {
 
             // Obtém a chave adicional de criptografia do arquivo de configuração appsettings.Development.json
-            var additionalKey = configuration.GetSection("Settings:Passwords:AdditionalKey").Value;
+            var additionalKey = configuration.GetValue<string>("Settings:Passwords:AdditionalKey");
 
             // Verifica se a chave adicional é nula ou vazia
             if (string.IsNullOrEmpty(additionalKey))
@@ -55,3 +55,4 @@ namespace MyRecipeBook.Application
         }
     }
 }
+
