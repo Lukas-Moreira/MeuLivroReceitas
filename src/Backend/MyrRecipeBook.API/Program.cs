@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 
 // Injecting Application and Infrastructure layers
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration); // Passando a configuração do appsettings.json
 
 var app = builder.Build();

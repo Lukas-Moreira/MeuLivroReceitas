@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MapsterMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Application.Services.Cryptography;
 using MyRecipeBook.Application.Services.Mappings;
@@ -9,11 +10,11 @@ namespace MyRecipeBook.Application
 {
     public static class DependecyInjectionExtension
     {
-        public static void AddApplication(this IServiceCollection services)
+        public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             //AddMappers(services); // Esperando retorno do professor sobre o uso do Mapster
             AddUseCases(services);
-            AddPassworEncrypter(services);
+            AddPassworEncrypter(services, configuration);
         }
 
         private static void AddMappers(IServiceCollection services)
@@ -37,9 +38,20 @@ namespace MyRecipeBook.Application
             services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
         }
 
-        private static void AddPassworEncrypter(IServiceCollection services)
+        private static void AddPassworEncrypter(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped(option => new PasswordEncrypter());
+
+            // Obtém a chave adicional de criptografia do arquivo de configuração appsettings.Development.json
+            var additionalKey = configuration.GetSection("Settings:Passwords:AdditionalKey").Value;
+
+            // Verifica se a chave adicional é nula ou vazia
+            if (string.IsNullOrEmpty(additionalKey))
+            {
+                throw new ArgumentNullException("Settings:Passwords:AdditionalKey", "A chave adicional de criptografia é nula.");
+            }
+
+            // Registra o PasswordEncrypter no contêiner de injeção de dependência
+            services.AddScoped(option => new PasswordEncrypter(additionalKey));
         }
     }
 }

@@ -9,11 +9,15 @@ namespace MyRecipeBook.Application.Services.Cryptography
 {
     public class PasswordEncrypter
     {
+        private readonly string _additionalKey;
+
+        // Construtor que recebe a chave adicional para a criptografia vindo da injeção de dependência
+        public PasswordEncrypter(string additionalKey) => _additionalKey = additionalKey;
+
         /* Função que faz a códificação da senha passada */
         public string Encrypt(string password)
         {
-            var additionalKey = "MYRECIPEBOOK-SECURE-KEY";  // Chave adicional para aumentar a segurança
-            var newPassword = $"{password}{additionalKey}"; // Concatena a senha com a chave adicional
+            var newPassword = $"{password}{_additionalKey}"; // Concatena a senha com a chave adicional
             var bytes = Encoding.UTF8.GetBytes(newPassword);   // Converte a senha em um array de bytes
             var hashBytes = SHA512.HashData(bytes);         // Criptografa a senha usando o algoritmo SHA-512
 
